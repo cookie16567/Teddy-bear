@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#f5576c">
+    <title>Teddy Love 💕</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧸</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Quicksand',sans-serif;background:linear-gradient(135deg,#ffecd2 0%,#fcb69f 50%,#ffecd2 100%);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:20px;padding-top:max(20px,env(safe-area-inset-top));overflow-y:auto}
+        .container{max-width:400px;width:100%}
+        .header{text-align:center;margin-bottom:16px}
+        .header h1{color:#d4577a;font-size:1.8rem;text-shadow:2px 2px 4px rgba(255,255,255,0.5)}
+        .bears-container{display:flex;justify-content:center;gap:12px;margin-bottom:16px}
+        .bear{text-align:center;cursor:pointer;transition:transform 0.3s}
+        .bear:active{transform:scale(0.95)}
+        .bear svg{filter:drop-shadow(3px 3px 5px rgba(0,0,0,0.2));width:90px;height:90px}
+        .bear-name{margin-top:6px}
+        .bear-name input{width:90px;border:none;background:rgba(255,255,255,0.7);border-radius:15px;padding:6px 10px;text-align:center;font-family:inherit;font-weight:600;color:#6b4c3b;font-size:0.9rem}
+        .bear-name input:focus{outline:2px solid #f5576c;background:white}
+        .game-card{background:white;border-radius:25px;padding:20px;box-shadow:0 10px 40px rgba(212,87,122,0.2);text-align:center}
+        .game-title{color:#d4577a;font-size:1.2rem;margin-bottom:12px;font-weight:700}
+        .question-area{min-height:100px;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#fff5f7 0%,#ffe8ec 100%);border-radius:20px;margin-bottom:16px}
+        .question{font-size:1.05rem;color:#5a4a42;line-height:1.5}
+        .btn{padding:14px 20px;border:none;border-radius:50px;font-family:inherit;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;margin-bottom:8px}
+        .btn:active{transform:scale(0.96)}
+        .btn-primary{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white;box-shadow:0 4px 15px rgba(245,87,108,0.4)}
+        .btn-secondary{background:linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);color:#5a4a42}
+        .game-select{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+        .game-option{padding:14px 10px;background:linear-gradient(135deg,#fff5f7 0%,#ffe8ec 100%);border:2px solid transparent;border-radius:15px;cursor:pointer;transition:all 0.2s}
+        .game-option:active{transform:scale(0.96);border-color:#f5576c}
+        .game-option .emoji{font-size:1.8rem;margin-bottom:4px}
+        .game-option .label{font-size:0.8rem;color:#6b4c3b;font-weight:600}
+        .answer-buttons{display:flex;gap:10px;margin-bottom:8px}
+        .answer-buttons .btn{flex:1;padding:12px 8px;font-size:0.9rem;margin-bottom:0}
+        .btn-brown{background:linear-gradient(135deg,#c9a87c 0%,#8b6914 100%);color:white}
+        .btn-white{background:linear-gradient(135deg,#f0f0f0 0%,#d4e5f7 100%);color:#5a4a42;border:2px solid #e0e0e0}
+        .result-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s;padding:20px}
+        .result-overlay.show{opacity:1;pointer-events:all}
+        .result-card{background:white;border-radius:25px;padding:25px;text-align:center;max-width:320px;width:100%;transform:scale(0.8);transition:transform 0.3s}
+        .result-overlay.show .result-card{transform:scale(1)}
+        .result-emoji{font-size:3.5rem;margin-bottom:12px}
+        .result-text{font-size:1.1rem;color:#5a4a42;margin-bottom:16px;line-height:1.4}
+        .hearts{position:fixed;pointer-events:none;z-index:50;top:0;left:0;right:0;bottom:0}
+        .heart{position:absolute;font-size:1.5rem;animation:float-up 3s ease-out forwards}
+        @keyframes float-up{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-200px) scale(0.5)}}
+        .wiggle{animation:wiggle 0.5s ease}
+        @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+        .kiss-animation{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4rem;z-index:200;animation:kiss-pop 1s ease forwards;pointer-events:none}
+        @keyframes kiss-pop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}50%{transform:translate(-50%,-50%) scale(1.5);opacity:1}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+        .hidden{display:none!important}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header"><h1>🧸 Teddy Love 💕</h1></div>
+        
+        <div class="bears-container">
+            <div class="bear" id="brownBear">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="20" cy="20" r="15" fill="#8B6914"/><circle cx="20" cy="20" r="10" fill="#C9A87C"/>
+                    <circle cx="80" cy="20" r="15" fill="#8B6914"/><circle cx="80" cy="20" r="10" fill="#C9A87C"/>
+                    <ellipse cx="50" cy="50" rx="40" ry="38" fill="#C9A87C"/>
+                    <ellipse cx="50" cy="62" rx="18" ry="14" fill="#E8D5B7"/>
+                    <ellipse cx="35" cy="45" rx="6" ry="7" fill="#2D1B0E"/><circle cx="33" cy="43" r="2" fill="white"/>
+                    <ellipse cx="65" cy="45" rx="6" ry="7" fill="#2D1B0E"/><circle cx="63" cy="43" r="2" fill="white"/>
+                    <ellipse cx="50" cy="58" rx="6" ry="4" fill="#2D1B0E"/>
+                    <path d="M 44 66 Q 50 72 56 66" stroke="#2D1B0E" stroke-width="2" fill="none"/>
+                    <ellipse cx="28" cy="58" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+                    <ellipse cx="72" cy="58" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+                </svg>
+                <div class="bear-name"><input type="text" id="brownName" value="Teddy" placeholder="Name"></div>
+            </div>
+            
+            <div class="bear" id="polarBear">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="20" cy="20" r="15" fill="#E8E8E8"/><circle cx="20" cy="20" r="10" fill="#FFF5EE"/>
+                    <circle cx="80" cy="20" r="15" fill="#E8E8E8"/><circle cx="80" cy="20" r="10" fill="#FFF5EE"/>
+                    <ellipse cx="50" cy="50" rx="40" ry="38" fill="#FFF5EE"/>
+                    <ellipse cx="50" cy="62" rx="18" ry="14" fill="#FFFFFF"/>
+                    <ellipse cx="35" cy="45" rx="6" ry="7" fill="#2D1B0E"/><circle cx="33" cy="43" r="2" fill="white"/>
+                    <ellipse cx="65" cy="45" rx="6" ry="7" fill="#2D1B0E"/><circle cx="63" cy="43" r="2" fill="white"/>
+                    <ellipse cx="50" cy="58" rx="6" ry="4" fill="#2D1B0E"/>
+                    <path d="M 44 66 Q 50 72 56 66" stroke="#2D1B0E" stroke-width="2" fill="none"/>
+                    <ellipse cx="28" cy="58" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+                    <ellipse cx="72" cy="58" rx="6" ry="4" fill="#FFB6C1" opacity="0.6"/>
+                </svg>
+                <div class="bear-name"><input type="text" id="polarName" value="Snowball" placeholder="Name"></div>
+            </div>
+        </div>
+        
+        <!-- Main Menu -->
+        <div class="game-card" id="mainMenu">
+            <div class="game-title">Choose a Game 🎮</div>
+            <div class="game-select">
+                <div class="game-option" onclick="startGame('whoWould')"><div class="emoji">🤔</div><div class="label">Who Would?</div></div>
+                <div class="game-option" onclick="startGame('truth')"><div class="emoji">💝</div><div class="label">Love Truths</div></div>
+                <div class="game-option" onclick="startGame('dare')"><div class="emoji">😘</div><div class="label">Cute Dares</div></div>
+                <div class="game-option" onclick="startGame('thisOrThat')"><div class="emoji">⚡</div><div class="label">This or That</div></div>
+            </div>
+            <button class="btn btn-secondary" onclick="hugBears()">🤗 Make Bears Hug</button>
+        </div>
+        
+        <!-- Who Would Game -->
+        <div class="game-card hidden" id="whoWouldGame">
+            <div class="game-title">Who Would? 🤔</div>
+            <div class="question-area"><div class="question" id="whoWouldQ">Loading...</div></div>
+            <div class="answer-buttons">
+                <button class="btn btn-brown" onclick="answer('brown')"><span id="brownBtn">Teddy</span> 🐻</button>
+                <button class="btn btn-white" onclick="answer('polar')"><span id="polarBtn">Snowball</span> 🐻‍❄️</button>
+            </div>
+            <button class="btn btn-primary" onclick="nextQ()">Next ➡️</button>
+            <button class="btn btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+        
+        <!-- Truth Game -->
+        <div class="game-card hidden" id="truthGame">
+            <div class="game-title">Love Truths 💝</div>
+            <div class="question-area"><div class="question" id="truthQ">Loading...</div></div>
+            <button class="btn btn-primary" onclick="nextQ()">Next Truth 💕</button>
+            <button class="btn btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+        
+        <!-- Dare Game -->
+        <div class="game-card hidden" id="dareGame">
+            <div class="game-title">Cute Dares 😘</div>
+            <div class="question-area"><div class="question" id="dareQ">Loading...</div></div>
+            <button class="btn btn-primary" onclick="completeDare()">Done! ✨</button>
+            <button class="btn btn-secondary" onclick="nextQ()">Skip →</button>
+            <button class="btn btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+        
+        <!-- This or That -->
+        <div class="game-card hidden" id="thisOrThatGame">
+            <div class="game-title">This or That ⚡</div>
+            <div class="question-area"><div class="question" id="totQ">Loading...</div></div>
+            <div class="answer-buttons">
+                <button class="btn btn-primary" id="opt1" onclick="pickOption(1)">Option 1</button>
+                <button class="btn btn-secondary" id="opt2" onclick="pickOption(2)">Option 2</button>
+            </div>
+            <button class="btn btn-secondary" onclick="nextQ()">Next ➡️</button>
+            <button class="btn btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+    </div>
+    
+    <div class="result-overlay" id="resultOverlay" onclick="closeResult()">
+        <div class="result-card" onclick="event.stopPropagation()">
+            <div class="result-emoji" id="resultEmoji">💕</div>
+            <div class="result-text" id="resultText">You two are so cute!</div>
+            <button class="btn btn-primary" onclick="closeResult()">Continue 💕</button>
+        </div>
+    </div>
+    
+    <div class="hearts" id="hearts"></div>
+
+<script>
+const data={
+    whoWould:["Who would fall asleep first during a movie?","Who would eat the last slice of pizza?","Who would forget an anniversary?","Who would cry during a sad movie?","Who would get lost without GPS?","Who would win in a tickle fight?","Who would hog the blanket?","Who would say 'I love you' first?","Who would plan the better date?","Who would be more jealous?","Who would take longer to get ready?","Who would apologize first after a fight?","Who would be braver in a horror movie?","Who would spend more on gifts?","Who would remember the little things?","Who would be more dramatic when sick?","Who would adopt 10 pets if they could?","Who would stay up late texting?","Who would win at video games?","Who would be the big spoon?","Who would steal food from the other's plate?","Who would be first to say 'marry me'?","Who would sing louder in the shower?","Who would get scared easier?","Who would spend all day in bed?"],
+    truth:["What was your first impression of your partner?","What's your favorite memory together?","What do you love most about your partner?","What song reminds you of your relationship?","What's something your partner does that always makes you smile?","When did you realize you were in love?","What's your favorite thing to do together?","What do you admire most about your partner?","What's a dream you want to achieve together?","What's the sweetest thing your partner has done?","What makes your partner unique?","What's your favorite inside joke?","What's your partner's best quality?","What moment made you feel most loved?","What have you learned from your partner?","What do you look forward to in your future together?","What small thing does your partner do that means a lot?","What's your favorite lazy day together?","What makes you proud to be with your partner?","What's your partner's cutest habit?"],
+    dare:["Give your partner a 10-second kiss! 💋","Do your best impression of your partner!","Give your partner a tight bear hug! 🐻","Whisper something sweet in their ear!","Slow dance together for 30 seconds! 💃","Take a cute selfie together! 📸","Give your partner a forehead kiss!","Look into each other's eyes for 15 seconds!","Tell your partner 3 things you love about them!","Give your partner a back massage!","Make up a secret handshake together!","Write a short love note!","Give butterfly kisses!","Play with your partner's hair for 30 seconds!","Give an Eskimo kiss (nose to nose)!","Sing a love song to your partner!","Do a silly dance together!","Give 5 quick kisses!","Share your favorite memory of them!","Compliment them in a funny voice!"],
+    thisOrThat:[
+        {q:"Date night:",o1:"Movie night 🎬",o2:"Dinner out 🍽️"},
+        {q:"Vacation:",o1:"Beach 🏖️",o2:"Mountains 🏔️"},
+        {q:"Morning:",o1:"Sleep in 😴",o2:"Early breakfast ☀️"},
+        {q:"Show love:",o1:"Words 💬",o2:"Hugs 🤗"},
+        {q:"Pet:",o1:"Puppy 🐕",o2:"Kitten 🐱"},
+        {q:"Cuddle weather:",o1:"Rainy 🌧️",o2:"Snowy ❄️"},
+        {q:"Surprise:",o1:"Flowers 💐",o2:"Chocolate 🍫"},
+        {q:"Trip:",o1:"Paris 🗼",o2:"Maldives 🏝️"},
+        {q:"Cook together:",o1:"Breakfast 🥞",o2:"Dinner 🕯️"},
+        {q:"Weekend:",o1:"Lazy day 🛋️",o2:"Adventure 🚗"},
+        {q:"Gift:",o1:"Handmade 🎨",o2:"Experience 🎁"},
+        {q:"Home:",o1:"City 🌆",o2:"Countryside 🏡"},
+        {q:"Cuddle:",o1:"Big spoon 🥄",o2:"Little spoon 🥄"},
+        {q:"Date:",o1:"Cooking 👨‍🍳",o2:"Game night 🎲"},
+        {q:"Treat:",o1:"Ice cream 🍦",o2:"Baking 🧁"}
+    ]
+};
+
+let game=null,idx=0,tot=null;
+const shuffle=a=>[...a].sort(()=>Math.random()-0.5);
+let qs={whoWould:shuffle(data.whoWould),truth:shuffle(data.truth),dare:shuffle(data.dare),thisOrThat:shuffle(data.thisOrThat)};
+
+function updateNames(){
+    const b=document.getElementById('brownName').value||'Teddy';
+    const p=document.getElementById('polarName').value||'Snowball';
+    document.getElementById('brownBtn').textContent=b;
+    document.getElementById('polarBtn').textContent=p;
+    try{localStorage.setItem('bn',b);localStorage.setItem('pn',p);}catch(e){}
+}
+
+window.onload=()=>{
+    try{
+        const b=localStorage.getItem('bn'),p=localStorage.getItem('pn');
+        if(b)document.getElementById('brownName').value=b;
+        if(p)document.getElementById('polarName').value=p;
+    }catch(e){}
+    updateNames();
+};
+
+document.getElementById('brownName').oninput=updateNames;
+document.getElementById('polarName').oninput=updateNames;
+
+function startGame(g){
+    game=g;idx=0;
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById('whoWouldGame').classList.toggle('hidden',g!=='whoWould');
+    document.getElementById('truthGame').classList.toggle('hidden',g!=='truth');
+    document.getElementById('dareGame').classList.toggle('hidden',g!=='dare');
+    document.getElementById('thisOrThatGame').classList.toggle('hidden',g!=='thisOrThat');
+    updateNames();nextQ();
+    if(navigator.vibrate)navigator.vibrate(30);
+}
+
+function nextQ(){
+    if(game==='whoWould'){
+        if(idx>=qs.whoWould.length){qs.whoWould=shuffle(data.whoWould);idx=0;}
+        document.getElementById('whoWouldQ').textContent=qs.whoWould[idx++];
+    }else if(game==='truth'){
+        if(idx>=qs.truth.length){qs.truth=shuffle(data.truth);idx=0;}
+        document.getElementById('truthQ').textContent=qs.truth[idx++];
+    }else if(game==='dare'){
+        if(idx>=qs.dare.length){qs.dare=shuffle(data.dare);idx=0;}
+        document.getElementById('dareQ').textContent=qs.dare[idx++];
+    }else if(game==='thisOrThat'){
+        if(idx>=qs.thisOrThat.length){qs.thisOrThat=shuffle(data.thisOrThat);idx=0;}
+        tot=qs.thisOrThat[idx++];
+        document.getElementById('totQ').textContent=tot.q;
+        document.getElementById('opt1').textContent=tot.o1;
+        document.getElementById('opt2').textContent=tot.o2;
+    }
+}
+
+function answer(bear){
+    const name=bear==='brown'?(document.getElementById('brownName').value||'Teddy'):(document.getElementById('polarName').value||'Snowball');
+    spawnHearts();showResult('🐻💕',name+' it is! You know each other so well!');
+    if(navigator.vibrate)navigator.vibrate([50,30,50]);
+}
+
+function pickOption(n){
+    const choice=n===1?tot.o1:tot.o2;
+    spawnHearts();showResult('✨','Great choice! '+choice);
+    if(navigator.vibrate)navigator.vibrate([50,30,50]);
+}
+
+function completeDare(){
+    spawnHearts();showKiss();
+    showResult('🎉💕',"You did it! You're the cutest!");
+    if(navigator.vibrate)navigator.vibrate([100,50,100]);
+}
+
+function showResult(e,t){
+    document.getElementById('resultEmoji').textContent=e;
+    document.getElementById('resultText').textContent=t;
+    document.getElementById('resultOverlay').classList.add('show');
+}
+
+function closeResult(){document.getElementById('resultOverlay').classList.remove('show');}
+
+function backToMenu(){
+    document.getElementById('mainMenu').classList.remove('hidden');
+    ['whoWouldGame','truthGame','dareGame','thisOrThatGame'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    game=null;
+}
+
+function spawnHearts(){
+    const c=document.getElementById('hearts');
+    const h=['💕','💖','💗','💓','💝','❤️','🧡','💛'];
+    for(let i=0;i<10;i++){
+        setTimeout(()=>{
+            const el=document.createElement('div');
+            el.className='heart';
+            el.textContent=h[Math.floor(Math.random()*h.length)];
+            el.style.left=Math.random()*100+'vw';
+            el.style.top=(60+Math.random()*30)+'vh';
+            c.appendChild(el);
+            setTimeout(()=>el.remove(),3000);
+        },i*80);
+    }
+}
+
+function showKiss(){
+    const k=document.createElement('div');
+    k.className='kiss-animation';
+    k.textContent='💋';
+    document.body.appendChild(k);
+    setTimeout(()=>k.remove(),1000);
+}
+
+function hugBears(){
+    spawnHearts();showKiss();
+    const b=document.getElementById('brownBear'),p=document.getElementById('polarBear');
+    b.style.transition=p.style.transition='transform 0.5s';
+    b.style.transform='translateX(25px)';
+    p.style.transform='translateX(-25px)';
+    setTimeout(()=>{b.style.transform='';p.style.transform='';},1500);
+    showResult('🐻❤️🐻‍❄️','The teddies are hugging! Now you hug too! 🤗');
+    if(navigator.vibrate)navigator.vibrate([100,50,100]);
+}
+</script>
+</body>
+</html>
